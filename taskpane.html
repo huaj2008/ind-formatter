@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IND Text Formatter</title>
+    
+    <!-- Office.js library -->
+    <script src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            margin: 0;
+            padding: 16px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        h1 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 0 0 16px 0;
+            color: #0078d4;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        button:last-child {
+            margin-bottom: 0;
+        }
+        
+        .btn-primary {
+            background-color: #0078d4;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #106ebe;
+        }
+        
+        .btn-secondary {
+            background-color: #e1e1e1;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #d1d1d1;
+        }
+        
+        .status {
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: none;
+        }
+        
+        .status.success {
+            display: block;
+            background-color: #dff6dd;
+            color: #107c10;
+        }
+        
+        .status.error {
+            display: block;
+            background-color: #fde7e9;
+            color: #d13438;
+        }
+        
+        .status.info {
+            display: block;
+            background-color: #e5f2ff;
+            color: #0078d4;
+        }
+        
+        .info-text {
+            font-size: 12px;
+            color: #666;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+        
+        .acronym-list {
+            font-size: 11px;
+            color: #888;
+            margin-top: 8px;
+            padding: 8px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📄 IND Text Formatter</h1>
+    
+    <div class="section">
+        <div class="section-title">Text Case</div>
+        <button class="btn-primary" id="btnTitleCase">
+            Title Case
+        </button>
+        <button class="btn-secondary" id="btnSentenceCase">
+            Sentence Case
+        </button>
+    </div>
+    
+    <div class="section">
+        <div id="status" class="status"></div>
+        <div class="info-text">
+            Select text in your document, then click a button above to convert.
+        </div>
+        <div class="acronym-list">
+            <strong>Preserved terms:</strong> FDA, IND, NDA, BLA, ANDA, DMF, CTD, eCTD, PK, PD, ADME, AUC, Cmax, Tmax, API, GMP, cGMP, ICH, QbD, PAT, CPP, CQA, QTPP
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION
+        // ============================================
+        const CUSTOM_TERMS = [
+            "FDA", "IND", "NDA", "BLA", "ANDA", "DMF", "CTD", "eCTD",
+            "PK", "PD", "ADME", "AUC", "Cmax", "Tmax", "API", "GMP",
+            "cGMP", "ICH", "QbD", "PAT", "CPP", "CQA", "QTPP"
+        ];
+        
+        const LOWERCASE_WORDS = ["a", "an", "the", "at", "by", "of", "in", "on", "to", "and", "but", "for", "or", "nor", "so", "yet"];
+
+        // ============================================
+        // OFFICE.JS INITIALIZATION
+        // ============================================
+        Office.onReady((info) => {
+            if (info.host === Office.HostType.Word) {
+                document.getElementById("btnTitleCase").addEventListener("click", () => runConversion("title"));
+                document.getElementById("btnSentenceCase").addEventListener("click", () => runConversion("sentence"));
+                showStatus("Ready! Select text and click a button.", "info");
+            }
+        });
+
+        // ============================================
+        // MAIN CONVERSION FUNCTION
+        // ============================================
+        async function runConversion(caseType) {
+            try {
+                await Word.run(async (context) => {
+                    // Get the selected text
+                    const selection = context.document.getSelection();
+                    selection.load("text");
+                    
+                    await context.sync();
+                    
+                    const originalText = selection.text;
+                    
+                    if (!originalText || originalText.trim() === "") {
+                        showStatus("Please select some text first.", "error");
+                        return;
+                    }
+                    
+                    // Convert the text
+                    let convertedText;
+                    if (caseType === "title") {
+                        convertedText = convertToTitleCase(originalText);
+                    } else {
+                        convertedText = convertToSentenceCase(originalText);
+                    }
+                    
+                    // Replace the selection with converted text
+                    selection.insertText(convertedText, Word.InsertLocation.replace);
+                    
+                    await context.sync();
+                    
+                    showStatus(`Converted to ${caseType} case!`, "success");
+                });
+            } catch (error) {
+                console.error(error);
+                showStatus("Error: " + error.message, "error");
+            }
+        }
+
+        // ============================================
+        // TITLE CASE CONVERSION
+        // ============================================
+        function convertToTitleCase(text) {
+            // Clean up
+            text = text.replace(/[\r\n]+/g, " ").trim();
+            
+            const words = text.split(" ");
+            const result = [];
+            
+            for (let i = 0; i < words.length; i++) {
+                let word = words[i].trim();
+                if (word === "") continue;
+                
+                const cleanWord = removeTrailingPunctuation(word);
+                const punctuation = word.substring(cleanWord.length);
+                
+                // Check custom terms
+                const customMatch = CUSTOM_TERMS.find(term => 
+                    term.toLowerCase() === cleanWord.toLowerCase()
+                );
+                
+                if (customMatch) {
+                    // Use exact custom term capitalization
+                    result.push(customMatch + punctuation);
+                } else if (i === 0 || i === words.length - 1) {
+                    // First or last word - always capitalize
+                    result.push(capitalizeFirst(cleanWord) + punctuation);
+                } else if (isAcronym(cleanWord)) {
+                    // Keep acronym as-is
+                    result.push(word);
+                } else if (LOWERCASE_WORDS.includes(cleanWord.toLowerCase())) {
+                    // Lowercase word
+                    result.push(cleanWord.toLowerCase() + punctuation);
+                } else {
+                    // Normal word
+                    result.push(capitalizeFirst(cleanWord) + punctuation);
+                }
+            }
+            
+            return result.join(" ");
+        }
+
+        // ============================================
+        // SENTENCE CASE CONVERSION
+        // ============================================
+        function convertToSentenceCase(text) {
+            text = text.replace(/[\r\n]+/g, " ").trim();
+            
+            if (text.length === 0) return "";
+            
+            let result = "";
+            let capitalizeNext = true;
+            let currentWord = "";
+            
+            for (let i = 0; i < text.length; i++) {
+                const ch = text[i];
+                
+                if (/[a-zA-Z0-9\-]/.test(ch)) {
+                    currentWord += ch;
+                } else {
+                    if (currentWord !== "") {
+                        result += processWordSentence(currentWord, capitalizeNext);
+                        currentWord = "";
+                        capitalizeNext = false;
+                    }
+                    
+                    result += ch;
+                    
+                    // Check for sentence ending
+                    if ((ch === "." || ch === "!" || ch === "?") && i < text.length - 1 && text[i + 1] === " ") {
+                        capitalizeNext = true;
+                    }
+                }
+            }
+            
+            // Handle last word
+            if (currentWord !== "") {
+                result += processWordSentence(currentWord, capitalizeNext);
+            }
+            
+            return result;
+        }
+        
+        function processWordSentence(word, capitalizeFirst) {
+            // Check custom terms
+            const customMatch = CUSTOM_TERMS.find(term => 
+                term.toLowerCase() === word.toLowerCase()
+            );
+            
+            if (customMatch) {
+                return customMatch;
+            }
+            
+            // Check if acronym
+            if (isAcronym(word)) {
+                return word;
+            }
+            
+            // Normal processing
+            if (capitalizeFirst) {
+                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+            } else {
+                return word.toLowerCase();
+            }
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        function removeTrailingPunctuation(word) {
+            const punctuation = /[.,;:!?)\]}"']+$/;
+            return word.replace(punctuation, "");
+        }
+        
+        function capitalizeFirst(word) {
+            if (word.length === 0) return word;
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }
+        
+        function isAcronym(word) {
+            // Check if word is 2-10 letters and all uppercase
+            const letters = word.replace(/[^a-zA-Z]/g, "");
+            return letters.length >= 2 && letters.length <= 10 && letters === letters.toUpperCase();
+        }
+        
+        function showStatus(message, type) {
+            const statusEl = document.getElementById("status");
+            statusEl.textContent = message;
+            statusEl.className = "status " + type;
+        }
+    </script>
+</body>
+</html>

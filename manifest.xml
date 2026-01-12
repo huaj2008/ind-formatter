@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<OfficeApp xmlns="http://schemas.microsoft.com/office/appforoffice/1.1"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:bt="http://schemas.microsoft.com/office/officeappbasictypes/1.0"
+           xmlns:ov="http://schemas.microsoft.com/office/taskpaneappversionoverrides"
+           xsi:type="TaskPaneApp">
+  
+  <!-- Basic Add-in Info -->
+  <Id>a1b2c3d4-e5f6-7890-abcd-ef1234567890</Id>
+  <Version>1.0.0.0</Version>
+  <ProviderName>IND Formatter</ProviderName>
+  <DefaultLocale>en-US</DefaultLocale>
+  <DisplayName DefaultValue="IND Text Formatter"/>
+  <Description DefaultValue="Format text with Title Case and Sentence Case, preserving pharmaceutical acronyms"/>
+  
+  <!-- Icon -->
+  <IconUrl DefaultValue="https://huaj2008.github.io/ind-formatter/assets/icon-32.png"/>
+  <HighResolutionIconUrl DefaultValue="https://huaj2008.github.io/ind-formatter/assets/icon-64.png"/>
+  
+  <!-- Support URL -->
+  <SupportUrl DefaultValue="https://huaj2008.github.io/ind-formatter"/>
+  
+  <!-- Domains the add-in can access -->
+  <AppDomains>
+    <AppDomain>https://huaj2008.github.io/ind-formatter</AppDomain>
+  </AppDomains>
+  
+  <!-- Host: Word -->
+  <Hosts>
+    <Host Name="Document"/>
+  </Hosts>
+  
+  <!-- Required API sets -->
+  <Requirements>
+    <Sets>
+      <Set Name="WordApi" MinVersion="1.1"/>
+    </Sets>
+  </Requirements>
+  
+  <!-- Default taskpane settings -->
+  <DefaultSettings>
+    <SourceLocation DefaultValue="https://huaj2008.github.io/ind-formatter/taskpane.html"/>
+  </DefaultSettings>
+  
+  <!-- Permissions needed -->
+  <Permissions>ReadWriteDocument</Permissions>
+  
+  <!-- Version overrides for ribbon integration -->
+  <VersionOverrides xmlns="http://schemas.microsoft.com/office/taskpaneappversionoverrides" xsi:type="VersionOverridesV1_0">
+    <Hosts>
+      <Host xsi:type="Document">
+        <DesktopFormFactor>
+          
+          <!-- Function file for ribbon buttons -->
+          <FunctionFile resid="Functions.Url"/>
+          
+          <!-- Add to Home tab -->
+          <ExtensionPoint xsi:type="PrimaryCommandSurface">
+            <OfficeTab id="TabHome">
+              <Group id="INDFormatterGroup">
+                <Label resid="GroupLabel"/>
+                <Icon>
+                  <bt:Image size="16" resid="Icon.16x16"/>
+                  <bt:Image size="32" resid="Icon.32x32"/>
+                  <bt:Image size="80" resid="Icon.80x80"/>
+                </Icon>
+                
+                <!-- Title Case Button -->
+                <Control xsi:type="Button" id="TitleCaseButton">
+                  <Label resid="TitleCaseButton.Label"/>
+                  <Supertip>
+                    <Title resid="TitleCaseButton.Label"/>
+                    <Description resid="TitleCaseButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>applyTitleCase</FunctionName>
+                  </Action>
+                </Control>
+                
+                <!-- Sentence Case Button -->
+                <Control xsi:type="Button" id="SentenceCaseButton">
+                  <Label resid="SentenceCaseButton.Label"/>
+                  <Supertip>
+                    <Title resid="SentenceCaseButton.Label"/>
+                    <Description resid="SentenceCaseButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ExecuteFunction">
+                    <FunctionName>applySentenceCase</FunctionName>
+                  </Action>
+                </Control>
+                
+                <!-- Open Taskpane Button -->
+                <Control xsi:type="Button" id="TaskpaneButton">
+                  <Label resid="TaskpaneButton.Label"/>
+                  <Supertip>
+                    <Title resid="TaskpaneButton.Label"/>
+                    <Description resid="TaskpaneButton.Tooltip"/>
+                  </Supertip>
+                  <Icon>
+                    <bt:Image size="16" resid="Icon.16x16"/>
+                    <bt:Image size="32" resid="Icon.32x32"/>
+                    <bt:Image size="80" resid="Icon.80x80"/>
+                  </Icon>
+                  <Action xsi:type="ShowTaskpane">
+                    <TaskpaneId>TextFormatterPane</TaskpaneId>
+                    <SourceLocation resid="Taskpane.Url"/>
+                  </Action>
+                </Control>
+                
+              </Group>
+            </OfficeTab>
+          </ExtensionPoint>
+          
+        </DesktopFormFactor>
+      </Host>
+    </Hosts>
+    
+    <!-- Resources -->
+    <Resources>
+      <bt:Images>
+        <bt:Image id="Icon.16x16" DefaultValue="https://huaj2008.github.io/ind-formatter/assets/icon-16.png"/>
+        <bt:Image id="Icon.32x32" DefaultValue="https://huaj2008.github.io/ind-formatter/assets/icon-32.png"/>
+        <bt:Image id="Icon.80x80" DefaultValue="https://huaj2008.github.io/ind-formatter/assets/icon-80.png"/>
+      </bt:Images>
+      <bt:Urls>
+        <bt:Url id="Functions.Url" DefaultValue="https://huaj2008.github.io/ind-formatter/functions.html"/>
+        <bt:Url id="Taskpane.Url" DefaultValue="https://huaj2008.github.io/ind-formatter/taskpane.html"/>
+      </bt:Urls>
+      <bt:ShortStrings>
+        <bt:String id="GroupLabel" DefaultValue="IND Formatter"/>
+        <bt:String id="TitleCaseButton.Label" DefaultValue="Title Case"/>
+        <bt:String id="SentenceCaseButton.Label" DefaultValue="Sentence Case"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="More Options"/>
+      </bt:ShortStrings>
+      <bt:LongStrings>
+        <bt:String id="TitleCaseButton.Tooltip" DefaultValue="Convert selected text to Title Case (preserves acronyms like FDA, IND)"/>
+        <bt:String id="SentenceCaseButton.Tooltip" DefaultValue="Convert selected text to Sentence Case (preserves acronyms like FDA, IND)"/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Open the formatting panel for more options"/>
+      </bt:LongStrings>
+    </Resources>
+    
+  </VersionOverrides>
+</OfficeApp>
