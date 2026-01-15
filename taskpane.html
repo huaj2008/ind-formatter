@@ -1,343 +1,2497 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IND Text Formatter</title>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>FormatCure WL</title>
     
-    <!-- Office.js library -->
-    <script src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+    <!-- Office.js -->
+    <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js" type="text/javascript"></script>
+    
+    <!-- Google Fonts - Professional yet distinctive -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
+        /* ============================================
+           CSS VARIABLES - Professional Document Theme
+           ============================================ */
+        :root {
+            --primary: #1e40af;
+            --primary-hover: #1e3a8a;
+            --primary-light: #dbeafe;
+            --secondary: #0f766e;
+            --secondary-hover: #115e59;
+            --secondary-light: #ccfbf1;
+            --accent: #7c3aed;
+            --accent-light: #ede9fe;
+            --success: #059669;
+            --success-light: #d1fae5;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-hover: #f1f5f9;
+            
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            
+            --border-color: #e2e8f0;
+            --border-focus: #3b82f6;
+            
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            
+            --transition: all 0.2s ease;
+        }
+
+        /* ============================================
+           BASE STYLES
+           ============================================ */
         * {
             box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            font-size: 14px;
             margin: 0;
-            padding: 16px;
-            background-color: #f5f5f5;
-            color: #333;
+            padding: 0;
         }
-        
-        h1 {
-            font-size: 18px;
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            min-height: 100vh;
+        }
+
+        /* ============================================
+           MINI HEADER
+           ============================================ */
+        .mini-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .app-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .build-num {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* ============================================
+           MAIN CONTENT
+           ============================================ */
+        .main-content {
+            padding: 12px;
+            padding-bottom: 40px;
+        }
+
+        /* ============================================
+           BUTTON GRID - Flat layout
+           ============================================ */
+        .button-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .tooltip-container.full-width {
+            grid-column: span 2;
+        }
+
+        .btn.full-btn {
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+            min-height: 50px;
+        }
+
+        /* ============================================
+           BUTTON STYLES
+           ============================================ */
+        .btn {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 14px 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+            min-height: 70px;
+        }
+
+        .btn:hover {
+            background: var(--bg-hover);
+            border-color: var(--border-focus);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .btn:hover .btn-icon {
+            transform: scale(1.1);
+        }
+
+        .btn-label {
+            font-size: 12px;
             font-weight: 600;
-            margin: 0 0 16px 0;
-            color: #0078d4;
+            color: var(--text-primary);
+            line-height: 1.3;
         }
-        
-        .section {
-            background: white;
-            border-radius: 8px;
+
+        /* Button Variants */
+        .btn.primary .btn-icon { background: var(--primary-light); color: var(--primary); }
+        .btn.secondary .btn-icon { background: var(--secondary-light); color: var(--secondary); }
+        .btn.accent .btn-icon { background: var(--accent-light); color: var(--accent); }
+        .btn.warning .btn-icon { background: var(--warning-light); color: var(--warning); }
+        .btn.success .btn-icon { background: var(--success-light); color: var(--success); }
+
+        /* ============================================
+           TOOLTIP STYLES
+           ============================================ */
+        .tooltip-container {
+            position: relative;
+        }
+
+        .tooltip {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--text-primary);
+            color: white;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            font-size: 11px;
+            line-height: 1.4;
+            width: 200px;
+            text-align: left;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            z-index: 1000;
+            box-shadow: var(--shadow-lg);
+            pointer-events: none;
+        }
+
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: var(--text-primary);
+        }
+
+        .tooltip-container:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .tooltip-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 12px;
+        }
+
+        .tooltip-desc {
+            color: #cbd5e1;
+            font-weight: 400;
+        }
+
+        /* ============================================
+           STATUS BAR
+           ============================================ */
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ============================================
+           NOTIFICATION TOAST
+           ============================================ */
+        .toast {
+            position: fixed;
+            bottom: 60px;
+            left: 16px;
+            right: 16px;
+            background: var(--text-primary);
+            color: white;
+            padding: 12px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1001;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { background: var(--success); }
+        .toast.error { background: #dc2626; }
+
+        .toast-icon {
+            font-size: 16px;
+        }
+
+        /* ============================================
+           MODAL STYLES
+           ============================================ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 320px;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.show .modal {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border-bottom: 1px solid var(--border-color);
         }
-        
-        .section-title {
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 16px;
+        }
+
+        .modal-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .heading-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .heading-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .heading-option label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .heading-option select {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .heading-option select:focus {
+            outline: none;
+            border-color: var(--border-focus);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            padding: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
             font-size: 13px;
             font-weight: 600;
-            color: #666;
-            margin-bottom: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .modal-btn.cancel {
+            background: var(--bg-hover);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .modal-btn.cancel:hover {
+            background: var(--border-color);
+        }
+
+        .modal-btn.apply {
+            background: var(--primary);
+            border: 1px solid var(--primary);
+            color: white;
+        }
+
+        .modal-btn.apply:hover {
+            background: var(--primary-hover);
+        }
+
+        .caption-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-family: inherit;
+            margin-top: 8px;
+        }
+
+        .caption-input:focus {
+            outline: none;
+            border-color: var(--border-focus);
+        }
+
+        .modal-hint {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .char-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .char-btn {
+            width: 100%;
+            aspect-ratio: 1;
+            font-size: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .char-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* ============================================
+           COMING SOON BADGE
+           ============================================ */
+        .coming-soon {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--warning);
+            color: white;
+            font-size: 8px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 10px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
-        button {
-            width: 100%;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease;
+
+        /* ============================================
+           RESPONSIVE / SCROLL
+           ============================================ */
+        .main-content {
+            padding-bottom: 60px;
         }
-        
-        button:last-child {
-            margin-bottom: 0;
-        }
-        
-        .btn-primary {
-            background-color: #0078d4;
-            color: white;
-        }
-        
-        .btn-primary:hover {
-            background-color: #106ebe;
-        }
-        
-        .btn-secondary {
-            background-color: #e1e1e1;
-            color: #333;
-        }
-        
-        .btn-secondary:hover {
-            background-color: #d1d1d1;
-        }
-        
-        .status {
-            padding: 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            display: none;
-        }
-        
-        .status.success {
-            display: block;
-            background-color: #dff6dd;
-            color: #107c10;
-        }
-        
-        .status.error {
-            display: block;
-            background-color: #fde7e9;
-            color: #d13438;
-        }
-        
-        .status.info {
-            display: block;
-            background-color: #e5f2ff;
-            color: #0078d4;
-        }
-        
-        .info-text {
-            font-size: 12px;
-            color: #666;
-            margin-top: 12px;
-            line-height: 1.5;
-        }
-        
-        .acronym-list {
-            font-size: 11px;
-            color: #888;
-            margin-top: 8px;
-            padding: 8px;
-            background: #f9f9f9;
+
+        /* ============================================
+           KEYBOARD SHORTCUT HINT
+           ============================================ */
+        .shortcut-hint {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            background: rgba(0,0,0,0.1);
+            padding: 2px 6px;
             border-radius: 4px;
+            color: var(--text-muted);
+            margin-top: 4px;
         }
     </style>
 </head>
 <body>
-    <h1>📄 IND Text Formatter</h1>
-    
-    <div class="section">
-        <div class="section-title">Text Case</div>
-        <button class="btn-primary" id="btnTitleCase">
-            Title Case
-        </button>
-        <button class="btn-secondary" id="btnSentenceCase">
-            Sentence Case
-        </button>
+    <!-- Minimal Header - just name and build -->
+    <div class="mini-header">
+        <span class="app-name">FormatCure WL</span>
+        <span class="build-num">Build #29</span>
     </div>
-    
-    <div class="section">
-        <div id="status" class="status"></div>
-        <div class="info-text">
-            Select text in your document, then click a button above to convert.
-        </div>
-        <div class="acronym-list">
-            <strong>Preserved terms:</strong> FDA, IND, NDA, BLA, ANDA, DMF, CTD, eCTD, PK, PD, ADME, AUC, Cmax, Tmax, API, GMP, cGMP, ICH, QbD, PAT, CPP, CQA, QTPP
+
+    <!-- Main Content - Flat button grid -->
+    <div class="main-content">
+        <div class="button-grid">
+            <!-- Title Case -->
+            <div class="tooltip-container">
+                <button class="btn primary" id="btnTitleCase">
+                    <div class="btn-icon">Tt</div>
+                    <span class="btn-label">Title Case</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Title Case</div>
+                    <div class="tooltip-desc">Capitalizes first letter of each word. Preserves pharma acronyms.</div>
+                </div>
+            </div>
+            
+            <!-- Sentence Case -->
+            <div class="tooltip-container">
+                <button class="btn primary" id="btnSentenceCase">
+                    <div class="btn-icon">Ss</div>
+                    <span class="btn-label">Sentence Case</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Sentence Case</div>
+                    <div class="tooltip-desc">Capitalizes first word of each sentence. Preserves pharma acronyms.</div>
+                </div>
+            </div>
+
+            <!-- Title Case All Headings -->
+            <div class="tooltip-container">
+                <button class="btn secondary" id="btnTitleAllHeadings">
+                    <div class="btn-icon">Ht</div>
+                    <span class="btn-label">All Headings</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Title Case All Headings</div>
+                    <div class="tooltip-desc">Apply Title Case to all headings (H1-H6) in document.</div>
+                </div>
+            </div>
+
+            <!-- Heading Case Dialog -->
+            <div class="tooltip-container">
+                <button class="btn secondary" id="btnHeadingDialog">
+                    <div class="btn-icon">H⚙</div>
+                    <span class="btn-label">Heading Options</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Heading Case Dialog</div>
+                    <div class="tooltip-desc">Choose Title/Sentence Case for each heading level (1-6).</div>
+                </div>
+            </div>
+
+            <!-- Heading Format -->
+            <div class="tooltip-container">
+                <button class="btn secondary" id="btnHeadingFormat">
+                    <div class="btn-icon">Hs</div>
+                    <span class="btn-label">Heading Format</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Heading Format</div>
+                    <div class="tooltip-desc">H1 = Title Case, H2-H6 = Sentence Case.</div>
+                </div>
+            </div>
+
+            <!-- Body Format -->
+            <div class="tooltip-container">
+                <button class="btn accent" id="btnBodyFormat">
+                    <div class="btn-icon">¶</div>
+                    <span class="btn-label">Body Format</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Format Body Text</div>
+                    <div class="tooltip-desc">Sentence Case + TNR 12pt, 1.15 spacing, 6pt before/after.</div>
+                </div>
+            </div>
+
+            <!-- Table Format -->
+            <div class="tooltip-container">
+                <button class="btn accent" id="btnTableFormat">
+                    <div class="btn-icon">▦</div>
+                    <span class="btn-label">Table Format</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Format Table</div>
+                    <div class="tooltip-desc">TNR 10pt, header bold/centered (no fill), body left-aligned.</div>
+                </div>
+            </div>
+
+            <!-- All Table Format -->
+            <div class="tooltip-container">
+                <button class="btn accent" id="btnAllTableFormat">
+                    <div class="btn-icon">▦▦</div>
+                    <span class="btn-label">All Table Format</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Format All Tables</div>
+                    <div class="tooltip-desc">Format ALL tables in document: TNR 10pt, header bold/centered.</div>
+                </div>
+            </div>
+
+            <!-- All Table Caption -->
+            <div class="tooltip-container">
+                <button class="btn warning" id="btnTableCaption">
+                    <div class="btn-icon">T#</div>
+                    <span class="btn-label">All Table Caption</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Format All Table Captions</div>
+                    <div class="tooltip-desc">Title Case, Tab separator, TNR 12pt Bold (no italic/underline).</div>
+                </div>
+            </div>
+
+            <!-- All Figure Caption -->
+            <div class="tooltip-container">
+                <button class="btn warning" id="btnFigureCaption">
+                    <div class="btn-icon">F#</div>
+                    <span class="btn-label">All Figure Caption</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Format All Figure Captions</div>
+                    <div class="tooltip-desc">Title Case, Tab separator, TNR 12pt Bold (no italic/underline).</div>
+                </div>
+            </div>
+
+            <!-- Cross-Reference Style -->
+            <div class="tooltip-container">
+                <button class="btn warning" id="btnCrossRef">
+                    <div class="btn-icon">↗</div>
+                    <span class="btn-label">Cross-Ref Style</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Cross-Reference Style</div>
+                    <div class="tooltip-desc">Format selection: Blue, Bold, Underlined, TNR 12pt.</div>
+                </div>
+            </div>
+
+            <!-- All Cross-Ref Style -->
+            <div class="tooltip-container">
+                <button class="btn warning" id="btnAllCrossRef">
+                    <div class="btn-icon">↗↗</div>
+                    <span class="btn-label">All Cross-Ref Style</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Format All Cross-References</div>
+                    <div class="tooltip-desc">Find all refs to Tables/Figures/Headings, apply Blue Bold Underlined.</div>
+                </div>
+            </div>
+
+            <!-- eCTD Link Style -->
+            <div class="tooltip-container">
+                <button class="btn warning" id="btnEctdLink">
+                    <div class="btn-icon">🔗</div>
+                    <span class="btn-label">eCTD Link</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">eCTD Link Style</div>
+                    <div class="tooltip-desc">Blue, Underlined, NOT bold, TNR 12pt.</div>
+                </div>
+            </div>
+
+            <!-- Special Characters -->
+            <div class="tooltip-container">
+                <button class="btn success" id="btnSpecialChars">
+                    <div class="btn-icon">×℃</div>
+                    <span class="btn-label">Special Chars</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Special Characters</div>
+                    <div class="tooltip-desc">Insert × ℃ ° ∞ ± ≤ ≥ μ α β and more.</div>
+                </div>
+            </div>
+
+            <!-- Scientific Names -->
+            <div class="tooltip-container">
+                <button class="btn success" id="btnScientificNames">
+                    <div class="btn-icon">𝐸𝑐</div>
+                    <span class="btn-label">Scientific Names</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Format Scientific Names</div>
+                    <div class="tooltip-desc">Italicize and format genus/species names (e.g., Escherichia coli).</div>
+                </div>
+            </div>
+
+            <!-- WORD-LEVEL FORMAT BUTTONS (Less frequently used) -->
+            <!-- Toggle Bold -->
+            <div class="tooltip-container">
+                <button class="btn" id="btnToggleBold" style="background:#e0e0e0;color:#333;">
+                    <div class="btn-icon"><b>B</b></div>
+                    <span class="btn-label">Bold</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Toggle Bold</div>
+                    <div class="tooltip-desc">Toggle bold on/off for current word or selection.</div>
+                </div>
+            </div>
+
+            <!-- Toggle Italic -->
+            <div class="tooltip-container">
+                <button class="btn" id="btnToggleItalic" style="background:#e0e0e0;color:#333;">
+                    <div class="btn-icon"><i>I</i></div>
+                    <span class="btn-label">Italic</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Toggle Italic</div>
+                    <div class="tooltip-desc">Toggle italic on/off for current word or selection.</div>
+                </div>
+            </div>
+
+            <!-- UPPERCASE -->
+            <div class="tooltip-container">
+                <button class="btn" id="btnUpperCase" style="background:#e0e0e0;color:#333;">
+                    <div class="btn-icon">AB</div>
+                    <span class="btn-label">UPPER</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">UPPERCASE</div>
+                    <div class="tooltip-desc">Convert word/selection to ALL CAPS.</div>
+                </div>
+            </div>
+
+            <!-- lowercase -->
+            <div class="tooltip-container">
+                <button class="btn" id="btnLowerCase" style="background:#e0e0e0;color:#333;">
+                    <div class="btn-icon">ab</div>
+                    <span class="btn-label">lower</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">lowercase</div>
+                    <div class="tooltip-desc">Convert word/selection to all lowercase.</div>
+                </div>
+            </div>
+
+            <!-- Capitalize -->
+            <div class="tooltip-container">
+                <button class="btn" id="btnCapitalize" style="background:#e0e0e0;color:#333;">
+                    <div class="btn-icon">Ab</div>
+                    <span class="btn-label">Capitalize</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Capitalize First Letter</div>
+                    <div class="tooltip-desc">Capitalize first letter only (rest lowercase).</div>
+                </div>
+            </div>
+
+            <!-- Update TOC/LOT/LOF Format -->
+            <div class="tooltip-container full-width">
+                <button class="btn accent full-btn" id="btnUpdateAll">
+                    <div class="btn-icon">🔄</div>
+                    <span class="btn-label">Update TOC/LOT/LOF Format</span>
+                </button>
+                <div class="tooltip">
+                    <div class="tooltip-title">Update & Format TOC/LOT/LOF</div>
+                    <div class="tooltip-desc">Update fields, format entries, auto-add missing titles.</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
+    <!-- Heading Options Modal -->
+    <div class="modal-overlay" id="headingModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Heading Case Options</span>
+                <button class="modal-close" id="modalClose">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Choose case conversion for each heading level:</p>
+                <div class="heading-options">
+                    <div class="heading-option">
+                        <label>TOC Heading (Unnumbered):</label>
+                        <select id="hTocOption">
+                            <option value="0">No Change</option>
+                            <option value="1" selected>Title Case</option>
+                            <option value="2">Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 1:</label>
+                        <select id="h1Option">
+                            <option value="0">No Change</option>
+                            <option value="1" selected>Title Case</option>
+                            <option value="2">Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 2:</label>
+                        <select id="h2Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 3:</label>
+                        <select id="h3Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 4:</label>
+                        <select id="h4Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 5:</label>
+                        <select id="h5Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 6:</label>
+                        <select id="h6Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 7:</label>
+                        <select id="h7Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 8:</label>
+                        <select id="h8Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 9:</label>
+                        <select id="h9Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                    <div class="heading-option">
+                        <label>Heading 10:</label>
+                        <select id="h10Option">
+                            <option value="0">No Change</option>
+                            <option value="1">Title Case</option>
+                            <option value="2" selected>Sentence Case</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" id="modalCancel">Cancel</button>
+                <button class="modal-btn apply" id="modalApply">Apply to Document</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Special Characters Modal -->
+    <div class="modal-overlay" id="specialCharsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <span class="modal-title">Insert Special Character</span>
+                <button class="modal-close" id="specialCharsClose">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Click a character to insert at cursor:</p>
+                <div class="char-grid">
+                    <button class="char-btn" data-char="×" title="Multiplication sign">×</button>
+                    <button class="char-btn" data-char="℃" title="Degree Celsius">℃</button>
+                    <button class="char-btn" data-char="°" title="Degree symbol">°</button>
+                    <button class="char-btn" data-char="∞" title="Infinity">∞</button>
+                    <button class="char-btn" data-char="±" title="Plus-minus">±</button>
+                    <button class="char-btn" data-char="≤" title="Less than or equal">≤</button>
+                    <button class="char-btn" data-char="≥" title="Greater than or equal">≥</button>
+                    <button class="char-btn" data-char="≠" title="Not equal">≠</button>
+                    <button class="char-btn" data-char="≈" title="Approximately">≈</button>
+                    <button class="char-btn" data-char="μ" title="Micro (mu)">μ</button>
+                    <button class="char-btn" data-char="α" title="Alpha">α</button>
+                    <button class="char-btn" data-char="β" title="Beta">β</button>
+                    <button class="char-btn" data-char="γ" title="Gamma">γ</button>
+                    <button class="char-btn" data-char="δ" title="Delta">δ</button>
+                    <button class="char-btn" data-char="λ" title="Lambda">λ</button>
+                    <button class="char-btn" data-char="σ" title="Sigma">σ</button>
+                    <button class="char-btn" data-char="®" title="Registered">®</button>
+                    <button class="char-btn" data-char="™" title="Trademark">™</button>
+                    <button class="char-btn" data-char="©" title="Copyright">©</button>
+                    <button class="char-btn" data-char="→" title="Arrow right">→</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scientific Names Modal -->
+    <div class="modal-overlay" id="scientificNamesModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <span class="modal-title">Scientific Names</span>
+                <button class="modal-close" id="scientificNamesClose">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Enter scientific names (one per line):</p>
+                <textarea id="scientificNamesInput" rows="6" style="width:100%;padding:8px;font-family:monospace;font-size:12px;border:1px solid #ccc;border-radius:4px;resize:vertical;" placeholder="escherichia coli&#10;bos taurus&#10;saccharomyces cerevisiae"></textarea>
+                <p style="font-size:11px;color:#666;margin-top:8px;">Will format as: <em>Escherichia coli</em> (italic, genus capitalized, species lowercase)</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" id="scientificNamesCancel">Cancel</button>
+                <button class="modal-btn apply" id="scientificNamesApply">Apply to Document</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <span class="toast-icon">✓</span>
+        <span class="toast-message">Action completed</span>
+    </div>
+
+    <!-- JavaScript -->
+    <script type="text/javascript">
         // ============================================
-        // CONFIGURATION
+        // DOCUALIGN - TASKPANE LOGIC
+        // Version 1.1.0
         // ============================================
-        const CUSTOM_TERMS = [
-            "FDA", "IND", "NDA", "BLA", "ANDA", "DMF", "CTD", "eCTD",
-            "PK", "PD", "ADME", "AUC", "Cmax", "Tmax", "API", "GMP",
-            "cGMP", "ICH", "QbD", "PAT", "CPP", "CQA", "QTPP"
+
+        // Pharmaceutical acronyms to preserve
+        const PRESERVED_TERMS = [
+            'FDA', 'IND', 'NDA', 'BLA', 'ANDA', 'DMF', 'CTD', 'eCTD',
+            'PK', 'PD', 'ADME', 'AUC', 'Cmax', 'Tmax',
+            'API', 'GMP', 'cGMP', 'ICH', 'QbD', 'PAT', 'CPP', 'CQA', 'QTPP',
+            'DNA', 'RNA', 'mRNA', 'pH', 'UV', 'IR', 'NMR', 'HPLC', 'GC', 'MS',
+            'IV', 'IM', 'SC', 'PO', 'QD', 'BID', 'TID', 'QID', 'PRN',
+            'US', 'EU', 'UK', 'WHO', 'EMA', 'PMDA', 'TGA', 'NMPA',
+            'SOP', 'QA', 'QC', 'R&D', 'CMC', 'CMO', 'CRO', 'CDMO'
         ];
-        
-        const LOWERCASE_WORDS = ["a", "an", "the", "at", "by", "of", "in", "on", "to", "and", "but", "for", "or", "nor", "so", "yet"];
 
-        // ============================================
-        // OFFICE.JS INITIALIZATION
-        // ============================================
-        Office.onReady((info) => {
+        const LOWERCASE_WORDS = [
+            'a', 'an', 'the', 'at', 'by', 'for', 'in', 'of', 'on', 'to', 'up',
+            'and', 'as', 'but', 'or', 'nor', 'so', 'yet'
+        ];
+
+        // Initialize Office
+        Office.onReady(function(info) {
             if (info.host === Office.HostType.Word) {
-                document.getElementById("btnTitleCase").addEventListener("click", () => runConversion("title"));
-                document.getElementById("btnSentenceCase").addEventListener("click", () => runConversion("sentence"));
-                showStatus("Ready! Select text and click a button.", "info");
+                // Text Formatting buttons
+                document.getElementById('btnTitleCase').addEventListener('click', handleTitleCase);
+                document.getElementById('btnSentenceCase').addEventListener('click', handleSentenceCase);
+                document.getElementById('btnTitleAllHeadings').addEventListener('click', handleTitleAllHeadings);
+                document.getElementById('btnHeadingDialog').addEventListener('click', showHeadingModal);
+                document.getElementById('btnHeadingFormat').addEventListener('click', handleHeadingFormat);
+                
+                // Word-level format buttons
+                document.getElementById('btnToggleBold').addEventListener('click', handleToggleBold);
+                document.getElementById('btnToggleItalic').addEventListener('click', handleToggleItalic);
+                document.getElementById('btnUpperCase').addEventListener('click', handleUpperCase);
+                document.getElementById('btnLowerCase').addEventListener('click', handleLowerCase);
+                document.getElementById('btnCapitalize').addEventListener('click', handleCapitalize);
+                
+                // Body & Tables buttons
+                document.getElementById('btnBodyFormat').addEventListener('click', handleBodyFormat);
+                document.getElementById('btnTableFormat').addEventListener('click', handleTableFormat);
+                document.getElementById('btnAllTableFormat').addEventListener('click', handleAllTableFormat);
+                
+                // Captions & References buttons
+                document.getElementById('btnTableCaption').addEventListener('click', handleTableCaption);
+                document.getElementById('btnFigureCaption').addEventListener('click', handleFigureCaption);
+                document.getElementById('btnCrossRef').addEventListener('click', handleCrossRefStyle);
+                document.getElementById('btnAllCrossRef').addEventListener('click', handleAllCrossRefStyle);
+                document.getElementById('btnEctdLink').addEventListener('click', handleEctdLinkStyle);
+                
+                // Document Tools buttons
+                document.getElementById('btnSpecialChars').addEventListener('click', showSpecialCharsModal);
+                document.getElementById('btnScientificNames').addEventListener('click', showScientificNamesModal);
+                
+                // Document Updates button
+                document.getElementById('btnUpdateAll').addEventListener('click', handleUpdateAll);
+                
+                // Heading Modal events
+                document.getElementById('modalClose').addEventListener('click', hideHeadingModal);
+                document.getElementById('modalCancel').addEventListener('click', hideHeadingModal);
+                document.getElementById('modalApply').addEventListener('click', applyHeadingOptions);
+                document.getElementById('headingModal').addEventListener('click', function(e) {
+                    if (e.target === this) hideHeadingModal();
+                });
+                
+                // Special Characters Modal events
+                document.getElementById('specialCharsClose').addEventListener('click', hideSpecialCharsModal);
+                document.getElementById('specialCharsModal').addEventListener('click', function(e) {
+                    if (e.target === this) hideSpecialCharsModal();
+                });
+                document.querySelectorAll('.char-btn').forEach(btn => {
+                    btn.addEventListener('click', () => insertSpecialChar(btn.dataset.char));
+                });
+                
+                // Scientific Names Modal events
+                document.getElementById('scientificNamesClose').addEventListener('click', hideScientificNamesModal);
+                document.getElementById('scientificNamesCancel').addEventListener('click', hideScientificNamesModal);
+                document.getElementById('scientificNamesApply').addEventListener('click', applyScientificNames);
+                document.getElementById('scientificNamesModal').addEventListener('click', function(e) {
+                    if (e.target === this) hideScientificNamesModal();
+                });
+                
+                // Show ready state
+                showToast('FormatCure WL ready!', 'success');
             }
         });
 
         // ============================================
-        // MAIN CONVERSION FUNCTION
+        // TOAST NOTIFICATION
         // ============================================
-        async function runConversion(caseType) {
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = toast.querySelector('.toast-message');
+            const toastIcon = toast.querySelector('.toast-icon');
+            
+            toastMessage.textContent = message;
+            toastIcon.textContent = type === 'success' ? '✓' : '✕';
+            toast.className = 'toast ' + type;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // ============================================
+        // TITLE CASE HANDLER
+        // ============================================
+        async function handleTitleCase() {
             try {
                 await Word.run(async (context) => {
-                    // Get the selected text
                     const selection = context.document.getSelection();
                     selection.load("text");
-                    
+                    await context.sync();
+
+                    let textToConvert = selection.text;
+                    let targetRange = selection;
+
+                    // If no text selected, get entire paragraph
+                    if (!textToConvert || textToConvert.trim() === "") {
+                        const paragraphs = selection.paragraphs;
+                        paragraphs.load("items");
+                        await context.sync();
+
+                        if (paragraphs.items.length > 0) {
+                            targetRange = paragraphs.items[0].getRange();
+                            targetRange.load("text");
+                            await context.sync();
+                            textToConvert = targetRange.text;
+                            
+                            // Remove trailing paragraph mark
+                            if (textToConvert.endsWith('\r')) {
+                                textToConvert = textToConvert.slice(0, -1);
+                            }
+                        }
+                    }
+
+                    if (textToConvert && textToConvert.trim() !== "") {
+                        const converted = convertToTitleCase(textToConvert);
+                        targetRange.insertText(converted, Word.InsertLocation.replace);
+                        showToast('Title Case applied!', 'success');
+                    } else {
+                        showToast('No text found', 'error');
+                    }
+
+                    await context.sync();
+                });
+            } catch (error) {
+                console.error("Title Case Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // SENTENCE CASE HANDLER
+        // Skips paragraphs with cross-references to preserve hyperlinks
+        // ============================================
+        async function handleSentenceCase() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.load("text");
+                    await context.sync();
+
+                    let textToConvert = selection.text;
+                    let targetRange = selection;
+                    let para = null;
+
+                    // If no text selected, get entire paragraph
+                    if (!textToConvert || textToConvert.trim() === "") {
+                        const paragraphs = selection.paragraphs;
+                        paragraphs.load("items");
+                        await context.sync();
+
+                        if (paragraphs.items.length > 0) {
+                            para = paragraphs.items[0];
+                            targetRange = para.getRange();
+                            targetRange.load("text");
+                            await context.sync();
+                            textToConvert = targetRange.text;
+                            
+                            // Remove trailing paragraph mark
+                            if (textToConvert.endsWith('\r')) {
+                                textToConvert = textToConvert.slice(0, -1);
+                            }
+                        }
+                    }
+
+                    if (textToConvert && textToConvert.trim() !== "") {
+                        // Check if paragraph has cross-references
+                        let hasFields = false;
+                        if (para) {
+                            const fields = para.fields;
+                            fields.load("items");
+                            await context.sync();
+                            hasFields = fields.items.length > 0;
+                        }
+                        
+                        if (hasFields) {
+                            // Has cross-refs - cannot change text without breaking links
+                            showToast('Skipped: paragraph has cross-refs (would break links)', 'error');
+                        } else {
+                            // No cross-refs - safe to convert
+                            const converted = convertToSentenceCase(textToConvert);
+                            targetRange.insertText(converted, Word.InsertLocation.replace);
+                            await context.sync();
+                            showToast('Sentence Case applied!', 'success');
+                        }
+                    } else {
+                        showToast('No text found', 'error');
+                    }
+
+                    await context.sync();
+                });
+            } catch (error) {
+                console.error("Sentence Case Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // WORD-LEVEL FORMAT HANDLERS
+        // Work on current word (if cursor) or selection
+        // ============================================
+        
+        // Helper: Get the current word by expanding selection
+        async function expandToWord(context, selection) {
+            // Try to get the paragraph and find the word
+            const para = selection.paragraphs.getFirst();
+            para.load("text");
+            selection.load("start, text");
+            await context.sync();
+            
+            const paraText = para.text;
+            const selStart = selection.start;
+            
+            // Find word boundaries around cursor
+            let wordStart = selStart;
+            let wordEnd = selStart;
+            
+            // Go backward to find start of word
+            while (wordStart > 0 && /\w/.test(paraText[wordStart - 1])) {
+                wordStart--;
+            }
+            
+            // Go forward to find end of word
+            while (wordEnd < paraText.length && /\w/.test(paraText[wordEnd])) {
+                wordEnd++;
+            }
+            
+            if (wordStart === wordEnd) {
+                return null; // No word found
+            }
+            
+            // Search for the word in the paragraph
+            const word = paraText.substring(wordStart, wordEnd);
+            const searchResults = para.search(word, { matchWholeWord: true });
+            searchResults.load("items");
+            await context.sync();
+            
+            if (searchResults.items.length > 0) {
+                return { range: searchResults.items[0], text: word };
+            }
+            return null;
+        }
+        
+        // Toggle Bold
+        async function handleToggleBold() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.load("text, font/bold");
                     await context.sync();
                     
-                    const originalText = selection.text;
+                    let range = selection;
                     
-                    if (!originalText || originalText.trim() === "") {
-                        showStatus("Please select some text first.", "error");
+                    // If no selection, just apply to current position
+                    if (!selection.text || selection.text.trim() === "" || selection.text.trim() === "\r") {
+                        showToast('Select text first', 'error');
                         return;
                     }
                     
-                    // Convert the text
-                    let convertedText;
-                    if (caseType === "title") {
-                        convertedText = convertToTitleCase(originalText);
-                    } else {
-                        convertedText = convertToSentenceCase(originalText);
+                    // Toggle bold
+                    const isBold = range.font.bold;
+                    range.font.bold = !isBold;
+                    
+                    await context.sync();
+                    showToast(isBold ? 'Bold removed' : 'Bold applied', 'success');
+                });
+            } catch (error) {
+                console.error("Toggle Bold Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Toggle Italic
+        async function handleToggleItalic() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.load("text, font/italic");
+                    await context.sync();
+                    
+                    let range = selection;
+                    
+                    // If no selection
+                    if (!selection.text || selection.text.trim() === "" || selection.text.trim() === "\r") {
+                        showToast('Select text first', 'error');
+                        return;
                     }
                     
-                    // Replace the selection with converted text
-                    selection.insertText(convertedText, Word.InsertLocation.replace);
+                    // Toggle italic
+                    const isItalic = range.font.italic;
+                    range.font.italic = !isItalic;
+                    
+                    await context.sync();
+                    showToast(isItalic ? 'Italic removed' : 'Italic applied', 'success');
+                });
+            } catch (error) {
+                console.error("Toggle Italic Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // UPPERCASE
+        async function handleUpperCase() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.load("text");
+                    await context.sync();
+                    
+                    let text = selection.text;
+                    
+                    if (!text || text.trim() === "" || text.trim() === "\r") {
+                        showToast('Select text first', 'error');
+                        return;
+                    }
+                    
+                    // Remove trailing spaces/paragraph marks for conversion
+                    const trimmed = text.replace(/[\r\n]+$/, '');
+                    
+                    // Convert to uppercase
+                    const converted = trimmed.toUpperCase();
+                    selection.insertText(converted, Word.InsertLocation.replace);
+                    
+                    await context.sync();
+                    showToast('UPPERCASE applied', 'success');
+                });
+            } catch (error) {
+                console.error("Uppercase Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // lowercase
+        async function handleLowerCase() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.load("text");
+                    await context.sync();
+                    
+                    let text = selection.text;
+                    
+                    if (!text || text.trim() === "" || text.trim() === "\r") {
+                        showToast('Select text first', 'error');
+                        return;
+                    }
+                    
+                    // Remove trailing paragraph marks for conversion
+                    const trimmed = text.replace(/[\r\n]+$/, '');
+                    
+                    // Convert to lowercase
+                    const converted = trimmed.toLowerCase();
+                    selection.insertText(converted, Word.InsertLocation.replace);
+                    
+                    await context.sync();
+                    showToast('lowercase applied', 'success');
+                });
+            } catch (error) {
+                console.error("Lowercase Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+        
+        // Capitalize (first letter only)
+        async function handleCapitalize() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.load("text");
+                    await context.sync();
+                    
+                    let text = selection.text;
+                    
+                    if (!text || text.trim() === "" || text.trim() === "\r") {
+                        showToast('Select text first', 'error');
+                        return;
+                    }
+                    
+                    // Remove trailing paragraph marks for conversion
+                    const trimmed = text.replace(/[\r\n]+$/, '');
+                    
+                    // Capitalize first letter, rest lowercase
+                    const converted = trimmed.charAt(0).toUpperCase() + trimmed.slice(1).toLowerCase();
+                    selection.insertText(converted, Word.InsertLocation.replace);
+                    
+                    await context.sync();
+                    showToast('Capitalized', 'success');
+                });
+            } catch (error) {
+                console.error("Capitalize Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // TITLE ALL HEADINGS HANDLER
+        // Includes TOC Heading (unnumbered) and H1-H10
+        // ============================================
+        async function handleTitleAllHeadings() {
+            try {
+                await Word.run(async (context) => {
+                    const body = context.document.body;
+                    const paragraphs = body.paragraphs;
+                    paragraphs.load("items");
+                    await context.sync();
+
+                    let headingCount = 0;
+
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        const para = paragraphs.items[i];
+                        para.load("style, text");
+                    }
+                    await context.sync();
+
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        const para = paragraphs.items[i];
+                        const styleName = para.style.toLowerCase();
+                        
+                        // Check if it's a heading style (including TOC Heading and H1-H10)
+                        if (styleName.includes('heading') || 
+                            styleName.includes('toc heading') ||
+                            styleName.match(/^h[1-9]$/) ||
+                            styleName === 'h10' ||
+                            styleName === 'title') {
+                            
+                            let text = para.text;
+                            if (text.endsWith('\r')) {
+                                text = text.slice(0, -1);
+                            }
+                            
+                            if (text.trim() !== '') {
+                                const converted = convertToTitleCase(text);
+                                para.insertText(converted, Word.InsertLocation.replace);
+                                headingCount++;
+                            }
+                        }
+                    }
+
+                    await context.sync();
+                    
+                    if (headingCount > 0) {
+                        showToast(`Title Case applied to ${headingCount} heading(s)!`, 'success');
+                    } else {
+                        showToast('No headings found in document', 'error');
+                    }
+                });
+            } catch (error) {
+                console.error("Title All Headings Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // HEADING MODAL FUNCTIONS
+        // ============================================
+        function showHeadingModal() {
+            document.getElementById('headingModal').classList.add('show');
+        }
+
+        function hideHeadingModal() {
+            document.getElementById('headingModal').classList.remove('show');
+        }
+
+        async function applyHeadingOptions() {
+            const options = {
+                'toc': document.getElementById('hTocOption').value,
+                1: document.getElementById('h1Option').value,
+                2: document.getElementById('h2Option').value,
+                3: document.getElementById('h3Option').value,
+                4: document.getElementById('h4Option').value,
+                5: document.getElementById('h5Option').value,
+                6: document.getElementById('h6Option').value,
+                7: document.getElementById('h7Option').value,
+                8: document.getElementById('h8Option').value,
+                9: document.getElementById('h9Option').value,
+                10: document.getElementById('h10Option').value
+            };
+
+            hideHeadingModal();
+
+            try {
+                await Word.run(async (context) => {
+                    const body = context.document.body;
+                    const paragraphs = body.paragraphs;
+                    paragraphs.load("items");
+                    await context.sync();
+
+                    let headingCount = 0;
+
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        const para = paragraphs.items[i];
+                        para.load("style, text");
+                    }
+                    await context.sync();
+
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        const para = paragraphs.items[i];
+                        const styleName = para.style.toLowerCase();
+                        
+                        // Determine heading level or TOC Heading
+                        let headingKey = null;
+                        if (styleName.includes('toc heading') || styleName === 'toc heading') {
+                            headingKey = 'toc';
+                        } else if (styleName.includes('heading 1') || styleName === 'h1') headingKey = 1;
+                        else if (styleName.includes('heading 2') || styleName === 'h2') headingKey = 2;
+                        else if (styleName.includes('heading 3') || styleName === 'h3') headingKey = 3;
+                        else if (styleName.includes('heading 4') || styleName === 'h4') headingKey = 4;
+                        else if (styleName.includes('heading 5') || styleName === 'h5') headingKey = 5;
+                        else if (styleName.includes('heading 6') || styleName === 'h6') headingKey = 6;
+                        else if (styleName.includes('heading 7') || styleName === 'h7') headingKey = 7;
+                        else if (styleName.includes('heading 8') || styleName === 'h8') headingKey = 8;
+                        else if (styleName.includes('heading 9') || styleName === 'h9') headingKey = 9;
+                        else if (styleName.includes('heading 10') || styleName === 'h10') headingKey = 10;
+                        
+                        if (headingKey !== null) {
+                            const option = options[headingKey];
+                            
+                            // 0 = No Change, 1 = Title Case, 2 = Sentence Case
+                            if (option !== '0') {
+                                let text = para.text;
+                                if (text.endsWith('\r')) {
+                                    text = text.slice(0, -1);
+                                }
+                                
+                                if (text.trim() !== '') {
+                                    let converted;
+                                    if (option === '1') {
+                                        converted = convertToTitleCase(text);
+                                    } else {
+                                        converted = convertToSentenceCase(text);
+                                    }
+                                    para.insertText(converted, Word.InsertLocation.replace);
+                                    headingCount++;
+                                }
+                            }
+                        }
+                    }
+
+                    await context.sync();
+                    
+                    if (headingCount > 0) {
+                        showToast(`Applied to ${headingCount} heading(s)!`, 'success');
+                    } else {
+                        showToast('No headings changed', 'error');
+                    }
+                });
+            } catch (error) {
+                console.error("Heading Options Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // BODY FORMAT HANDLER
+        // Applies body formatting while preserving cross-reference fields
+        // For paragraphs WITH cross-refs: applies formatting only (no text change)
+        // For paragraphs WITHOUT cross-refs: applies formatting + sentence case
+        // ============================================
+        async function handleBodyFormat() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    const paragraphs = selection.paragraphs;
+                    paragraphs.load("items");
+                    await context.sync();
+
+                    let paraCount = 0;
+                    let skippedCount = 0;
+
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        const para = paragraphs.items[i];
+                        
+                        // Apply paragraph-level formatting (spacing, alignment)
+                        para.alignment = Word.Alignment.left;
+                        para.spaceAfter = 6;
+                        para.spaceBefore = 6;
+                        para.lineSpacing = 13.8; // 1.15 × 12pt = 13.8pt
+                        
+                        // Check if paragraph has cross-reference fields
+                        const fields = para.fields;
+                        fields.load("items");
+                        await context.sync();
+                        
+                        if (fields.items.length > 0) {
+                            // Has cross-refs - ONLY apply font formatting, don't change text
+                            // This preserves the hyperlinks
+                            para.font.name = "Times New Roman";
+                            para.font.size = 12;
+                            skippedCount++;
+                        } else {
+                            // No cross-refs - safe to replace text and apply full formatting
+                            para.load("text");
+                            await context.sync();
+                            
+                            let text = para.text;
+                            if (text.endsWith('\r')) {
+                                text = text.slice(0, -1);
+                            }
+                            
+                            if (text.trim() !== '') {
+                                // Apply sentence case
+                                const converted = convertToSentenceCase(text);
+                                para.insertText(converted, Word.InsertLocation.replace);
+                                await context.sync();
+                            }
+                            
+                            // Apply full body font formatting (regular text)
+                            para.font.name = "Times New Roman";
+                            para.font.size = 12;
+                            para.font.bold = false;
+                            para.font.italic = false;
+                            para.font.underline = Word.UnderlineType.none;
+                            para.font.color = "#000000";
+                        }
+                        
+                        paraCount++;
+                    }
+
+                    await context.sync();
+                    
+                    let msg = `Body format applied to ${paraCount} paragraph(s)!`;
+                    if (skippedCount > 0) {
+                        msg += ` (${skippedCount} with cross-refs: font only)`;
+                    }
+                    showToast(msg, 'success');
+                });
+            } catch (error) {
+                console.error("Body Format Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // TABLE FORMAT HANDLER
+        // Note: Repeat header row not supported in Word JS API
+        // User must set manually: Table Properties → Row → Repeat as header row
+        // ============================================
+        async function handleTableFormat() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    
+                    // Get the table
+                    const table = selection.parentTable;
+                    table.load("rows");
+                    await context.sync();
+                    
+                    // Get first row (header)
+                    const headerRow = table.rows.getFirst();
+                    headerRow.load("cells");
+                    await context.sync();
+                    
+                    // Make header row bold
+                    headerRow.font.bold = true;
+                    headerRow.font.name = "Times New Roman";
+                    headerRow.font.size = 10;
+                    
+                    // Center header cells and clear shading
+                    const headerCells = headerRow.cells;
+                    headerCells.load("items");
+                    await context.sync();
+                    
+                    for (let i = 0; i < headerCells.items.length; i++) {
+                        // Set cell shading to white (clear any color)
+                        headerCells.items[i].shadingColor = "FFFFFF";
+                        headerCells.items[i].body.paragraphs.load("items");
+                    }
+                    await context.sync();
+                    
+                    for (let i = 0; i < headerCells.items.length; i++) {
+                        const paras = headerCells.items[i].body.paragraphs.items;
+                        for (let j = 0; j < paras.length; j++) {
+                            paras[j].alignment = Word.Alignment.centered;
+                        }
+                    }
+                    
+                    // Format body rows (all except first)
+                    const allRows = table.rows;
+                    allRows.load("items");
+                    await context.sync();
+                    
+                    for (let r = 1; r < allRows.items.length; r++) {
+                        const row = allRows.items[r];
+                        row.font.bold = false;
+                        row.font.name = "Times New Roman";
+                        row.font.size = 10;
+                        
+                        row.load("cells");
+                        await context.sync();
+                        
+                        const cells = row.cells;
+                        cells.load("items");
+                        await context.sync();
+                        
+                        for (let c = 0; c < cells.items.length; c++) {
+                            // Clear body cell shading too
+                            cells.items[c].shadingColor = "FFFFFF";
+                            cells.items[c].body.paragraphs.load("items");
+                        }
+                        await context.sync();
+                        
+                        for (let c = 0; c < cells.items.length; c++) {
+                            const paras = cells.items[c].body.paragraphs.items;
+                            for (let p = 0; p < paras.length; p++) {
+                                paras[p].alignment = Word.Alignment.left;
+                            }
+                        }
+                    }
+                    
+                    // Auto-fit table to window
+                    table.autoFitWindow();
+                    
+                    await context.sync();
+                    showToast('Table formatted! (Set repeat header manually if needed)', 'success');
+                });
+            } catch (error) {
+                console.error("Table Format Error:", error);
+                showToast('Click inside a table first: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // ALL TABLE FORMAT HANDLER
+        // Formats ALL tables in the document
+        // Note: Repeat header row not supported in Word JS API
+        // ============================================
+        async function handleAllTableFormat() {
+            try {
+                showToast('Formatting all tables...', 'success');
+                await Word.run(async (context) => {
+                    const tables = context.document.body.tables;
+                    tables.load("items");
+                    await context.sync();
+                    
+                    if (tables.items.length === 0) {
+                        showToast('No tables found in document', 'error');
+                        return;
+                    }
+                    
+                    for (let t = 0; t < tables.items.length; t++) {
+                        const table = tables.items[t];
+                        
+                        // Get first row (header)
+                        const rows = table.rows;
+                        rows.load("items");
+                        await context.sync();
+                        
+                        if (rows.items.length > 0) {
+                            const headerRow = rows.items[0];
+                            
+                            // Format header row - bold, centered, white fill
+                            headerRow.font.bold = true;
+                            headerRow.font.name = "Times New Roman";
+                            headerRow.font.size = 10;
+                            
+                            const headerCells = headerRow.cells;
+                            headerCells.load("items");
+                            await context.sync();
+                            
+                            for (let i = 0; i < headerCells.items.length; i++) {
+                                // Set cell shading to white
+                                headerCells.items[i].shadingColor = "FFFFFF";
+                                headerCells.items[i].body.paragraphs.load("items");
+                            }
+                            await context.sync();
+                            
+                            for (let i = 0; i < headerCells.items.length; i++) {
+                                const paras = headerCells.items[i].body.paragraphs.items;
+                                for (let j = 0; j < paras.length; j++) {
+                                    paras[j].alignment = Word.Alignment.centered;
+                                }
+                            }
+                            
+                            // Format body rows
+                            for (let r = 1; r < rows.items.length; r++) {
+                                const row = rows.items[r];
+                                row.font.bold = false;
+                                row.font.name = "Times New Roman";
+                                row.font.size = 10;
+                                
+                                const cells = row.cells;
+                                cells.load("items");
+                                await context.sync();
+                                
+                                for (let c = 0; c < cells.items.length; c++) {
+                                    // Set body cell shading to white
+                                    cells.items[c].shadingColor = "FFFFFF";
+                                    cells.items[c].body.paragraphs.load("items");
+                                }
+                                await context.sync();
+                                
+                                for (let c = 0; c < cells.items.length; c++) {
+                                    const paras = cells.items[c].body.paragraphs.items;
+                                    for (let p = 0; p < paras.length; p++) {
+                                        paras[p].alignment = Word.Alignment.left;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        // Auto-fit table
+                        table.autoFitWindow();
+                    }
+                    
+                    await context.sync();
+                    showToast(`Formatted ${tables.items.length} table(s)!`, 'success');
+                });
+            } catch (error) {
+                console.error("All Table Format Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // FORMAT CAPTION HANDLERS
+        // Finds ALL captions in document and formats them
+        // Converts any separator (colon, space, none) to tab
+        // Format: Table #[tab]Caption Text in Title Case
+        // ============================================
+        async function handleTableCaption() {
+            await formatAllCaptions('Table');
+        }
+
+        async function handleFigureCaption() {
+            await formatAllCaptions('Figure');
+        }
+
+        async function formatAllCaptions(captionType) {
+            try {
+                await Word.run(async (context) => {
+                    const body = context.document.body;
+                    const paragraphs = body.paragraphs;
+                    paragraphs.load("items");
+                    await context.sync();
+
+                    // Load all paragraph text
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        paragraphs.items[i].load("text");
+                    }
+                    await context.sync();
+
+                    let formattedCount = 0;
+                    
+                    // Match "Table" or "Figure" followed by space(s) and number(s)
+                    const captionRegex = new RegExp(`^(${captionType}\\s*\\d+)(.*)`, 'i');
+
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        const para = paragraphs.items[i];
+                        let text = para.text;
+                        
+                        // Remove trailing paragraph mark
+                        if (text.endsWith('\r')) {
+                            text = text.slice(0, -1);
+                        }
+
+                        // Check if this is a caption
+                        const match = text.match(captionRegex);
+                        if (!match) {
+                            continue;
+                        }
+
+                        const prefix = match[1]; // "Table 4" or "Table4"
+                        let afterPrefix = match[2]; // everything after
+                        
+                        // Remove any leading separator (tab, colon, space, or nothing)
+                        let captionText = afterPrefix.replace(/^[\t:\s]*/, '').trim();
+                        
+                        if (captionText) {
+                            // Convert to Title Case
+                            const convertedCaption = convertToTitleCase(captionText);
+                            
+                            // Find and replace everything after the prefix
+                            if (afterPrefix) {
+                                // Search for the exact text after prefix
+                                const searchRange = para.search(afterPrefix, { matchCase: false });
+                                searchRange.load("items");
+                                await context.sync();
+                                
+                                if (searchRange.items.length > 0) {
+                                    // Replace with tab + converted caption
+                                    searchRange.items[0].insertText('\t' + convertedCaption, Word.InsertLocation.replace);
+                                }
+                            }
+                        } else if (afterPrefix === '') {
+                            // No caption text at all, just "Table 4" - skip
+                            continue;
+                        }
+
+                        // Apply formatting to entire paragraph - Bold only, no italic/underline
+                        para.font.name = "Times New Roman";
+                        para.font.size = 12;
+                        para.font.bold = true;
+                        para.font.italic = false;
+                        para.font.underline = Word.UnderlineType.none;
+                        para.alignment = Word.Alignment.left;
+                        
+                        formattedCount++;
+                    }
+
+                    await context.sync();
+
+                    if (formattedCount > 0) {
+                        showToast(`Formatted ${formattedCount} ${captionType.toLowerCase()} caption(s)!`, 'success');
+                    } else {
+                        showToast(`No ${captionType.toLowerCase()} captions found`, 'error');
+                    }
+                });
+            } catch (error) {
+                console.error("Format Caption Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // CROSS-REFERENCE STYLE HANDLER
+        // ============================================
+        async function handleCrossRefStyle() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.load("text");
+                    await context.sync();
+
+                    if (!selection.text || selection.text.trim() === "") {
+                        showToast('Select text first', 'error');
+                        return;
+                    }
+
+                    // Apply cross-reference style: Blue, Bold, Underlined, NOT italic
+                    selection.font.name = "Times New Roman";
+                    selection.font.size = 12;
+                    selection.font.bold = true;
+                    selection.font.italic = false;
+                    selection.font.underline = Word.UnderlineType.single;
+                    selection.font.color = "#0000FF"; // Blue
+
+                    await context.sync();
+                    showToast('Cross-reference style applied!', 'success');
+                });
+            } catch (error) {
+                console.error("Cross-Ref Style Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // ALL CROSS-REFERENCE STYLE HANDLER
+        // Finds all REF fields (Word cross-references)
+        // These are created via References → Cross-reference
+        // ============================================
+        async function handleAllCrossRefStyle() {
+            try {
+                showToast('Finding cross-references...', 'success');
+                await Word.run(async (context) => {
+                    let totalFormatted = 0;
+                    
+                    // Get all fields in the document
+                    const fields = context.document.body.fields;
+                    fields.load("items");
+                    await context.sync();
+                    
+                    // Format each REF field (cross-reference)
+                    for (let i = 0; i < fields.items.length; i++) {
+                        const field = fields.items[i];
+                        field.load("code, result");
+                        await context.sync();
+                        
+                        // Check if this is a REF field (cross-reference)
+                        // REF fields have codes like " REF _Ref123456 \h "
+                        const fieldCode = field.code || "";
+                        if (fieldCode.toUpperCase().includes('REF ') || 
+                            fieldCode.toUpperCase().includes('PAGEREF ') ||
+                            fieldCode.toUpperCase().includes('NOTEREF ')) {
+                            
+                            // Get the result range and format it
+                            const resultRange = field.result;
+                            resultRange.font.name = "Times New Roman";
+                            resultRange.font.size = 12;
+                            resultRange.font.bold = true;
+                            resultRange.font.italic = false;
+                            resultRange.font.underline = Word.UnderlineType.single;
+                            resultRange.font.color = "#0000FF";
+                            totalFormatted++;
+                        }
+                    }
                     
                     await context.sync();
                     
-                    showStatus(`Converted to ${caseType} case!`, "success");
+                    if (totalFormatted > 0) {
+                        showToast(`Formatted ${totalFormatted} cross-reference(s)!`, 'success');
+                    } else {
+                        showToast('No cross-references found (insert via References → Cross-reference)', 'error');
+                    }
                 });
             } catch (error) {
-                console.error(error);
-                showStatus("Error: " + error.message, "error");
+                console.error("All Cross-Ref Style Error:", error);
+                showToast('Error: ' + error.message, 'error');
             }
         }
 
         // ============================================
-        // TITLE CASE CONVERSION
+        // eCTD LINK STYLE HANDLER
+        // ============================================
+        async function handleEctdLinkStyle() {
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.load("text");
+                    await context.sync();
+
+                    if (!selection.text || selection.text.trim() === "") {
+                        showToast('Select text first', 'error');
+                        return;
+                    }
+
+                    // Apply eCTD link style: Blue, Underlined, NOT bold
+                    selection.font.name = "Times New Roman";
+                    selection.font.size = 12;
+                    selection.font.bold = false;
+                    selection.font.underline = Word.UnderlineType.single;
+                    selection.font.color = "#0000FF"; // Blue
+
+                    await context.sync();
+                    showToast('eCTD link style applied!', 'success');
+                });
+            } catch (error) {
+                console.error("eCTD Link Style Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // HEADING FORMAT HANDLER (H1=Title, H2-H6=Sentence)
+        // ============================================
+        async function handleHeadingFormat() {
+            try {
+                await Word.run(async (context) => {
+                    const body = context.document.body;
+                    const paragraphs = body.paragraphs;
+                    paragraphs.load("items");
+                    await context.sync();
+
+                    let headingCount = 0;
+
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        const para = paragraphs.items[i];
+                        para.load("style, text");
+                    }
+                    await context.sync();
+
+                    for (let i = 0; i < paragraphs.items.length; i++) {
+                        const para = paragraphs.items[i];
+                        const styleName = para.style.toLowerCase();
+                        
+                        // Determine heading level (TOC Heading and H1 get Title Case, rest get Sentence Case)
+                        let useTitle = false;
+                        let isHeading = false;
+                        
+                        if (styleName.includes('toc heading') || styleName === 'toc heading') {
+                            isHeading = true;
+                            useTitle = true; // TOC Heading = Title Case
+                        } else if (styleName.includes('heading 1') || styleName === 'h1' || styleName === 'title') {
+                            isHeading = true;
+                            useTitle = true; // H1 = Title Case
+                        } else if (styleName.includes('heading 2') || styleName === 'h2') {
+                            isHeading = true;
+                        } else if (styleName.includes('heading 3') || styleName === 'h3') {
+                            isHeading = true;
+                        } else if (styleName.includes('heading 4') || styleName === 'h4') {
+                            isHeading = true;
+                        } else if (styleName.includes('heading 5') || styleName === 'h5') {
+                            isHeading = true;
+                        } else if (styleName.includes('heading 6') || styleName === 'h6') {
+                            isHeading = true;
+                        } else if (styleName.includes('heading 7') || styleName === 'h7') {
+                            isHeading = true;
+                        } else if (styleName.includes('heading 8') || styleName === 'h8') {
+                            isHeading = true;
+                        } else if (styleName.includes('heading 9') || styleName === 'h9') {
+                            isHeading = true;
+                        } else if (styleName.includes('heading 10') || styleName === 'h10') {
+                            isHeading = true;
+                        }
+                        
+                        if (isHeading) {
+                            let text = para.text;
+                            if (text.endsWith('\r')) {
+                                text = text.slice(0, -1);
+                            }
+                            
+                            if (text.trim() !== '') {
+                                let converted;
+                                if (useTitle) {
+                                    // TOC Heading and H1 = Title Case
+                                    converted = convertToTitleCase(text);
+                                } else {
+                                    // H2-H10 = Sentence Case
+                                    converted = convertToSentenceCase(text);
+                                }
+                                para.insertText(converted, Word.InsertLocation.replace);
+                                headingCount++;
+                            }
+                        }
+                    }
+
+                    await context.sync();
+                    
+                    if (headingCount > 0) {
+                        showToast(`Formatted ${headingCount} heading(s)!`, 'success');
+                    } else {
+                        showToast('No headings found', 'error');
+                    }
+                });
+            } catch (error) {
+                console.error("Heading Format Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // SPECIAL CHARACTERS MODAL
+        // ============================================
+        function showSpecialCharsModal() {
+            document.getElementById('specialCharsModal').classList.add('show');
+        }
+
+        function hideSpecialCharsModal() {
+            document.getElementById('specialCharsModal').classList.remove('show');
+        }
+
+        async function insertSpecialChar(char) {
+            hideSpecialCharsModal();
+            try {
+                await Word.run(async (context) => {
+                    const selection = context.document.getSelection();
+                    selection.insertText(char, Word.InsertLocation.replace);
+                    await context.sync();
+                    showToast(`Inserted: ${char}`, 'success');
+                });
+            } catch (error) {
+                console.error("Special Char Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // LATIN TERMS HANDLER
+        // ============================================
+        // ============================================
+        // SCIENTIFIC NAMES MODAL & HANDLER
+        // ============================================
+        function showScientificNamesModal() {
+            document.getElementById('scientificNamesModal').classList.add('show');
+            document.getElementById('scientificNamesInput').value = '';
+            document.getElementById('scientificNamesInput').focus();
+        }
+        
+        function hideScientificNamesModal() {
+            document.getElementById('scientificNamesModal').classList.remove('show');
+        }
+        
+        async function applyScientificNames() {
+            const input = document.getElementById('scientificNamesInput').value.trim();
+            
+            if (!input) {
+                showToast('Enter at least one scientific name', 'error');
+                return;
+            }
+            
+            // Parse input - one name per line
+            const names = input.split('\n')
+                .map(line => line.trim().toLowerCase())
+                .filter(line => line.length > 0 && line.includes(' '));
+            
+            if (names.length === 0) {
+                showToast('Enter genus and species (e.g., "escherichia coli")', 'error');
+                return;
+            }
+            
+            hideScientificNamesModal();
+            
+            try {
+                await Word.run(async (context) => {
+                    let totalFormatted = 0;
+                    
+                    for (const name of names) {
+                        // Split into genus and species
+                        const parts = name.split(/\s+/);
+                        const genus = parts[0];
+                        const species = parts.slice(1).join(' ');
+                        
+                        // Correct format: Genus species (first capitalized, rest lowercase)
+                        const correctFormat = genus.charAt(0).toUpperCase() + genus.slice(1).toLowerCase() + ' ' + species.toLowerCase();
+                        
+                        // Search for all variations (case-insensitive)
+                        const searchResults = context.document.body.search(name, {
+                            matchCase: false,
+                            matchWholeWord: true
+                        });
+                        searchResults.load("items");
+                        await context.sync();
+                        
+                        for (let i = 0; i < searchResults.items.length; i++) {
+                            const range = searchResults.items[i];
+                            // Replace with correct format
+                            range.insertText(correctFormat, Word.InsertLocation.replace);
+                            // Apply italic
+                            range.font.italic = true;
+                            totalFormatted++;
+                        }
+                        
+                        await context.sync();
+                    }
+                    
+                    if (totalFormatted > 0) {
+                        showToast(`Formatted ${totalFormatted} scientific name(s)!`, 'success');
+                    } else {
+                        showToast('No matching names found in document', 'error');
+                    }
+                });
+            } catch (error) {
+                console.error("Scientific Names Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // UPDATE TOC/LOT/LOF FORMAT (Optimized)
+        // ============================================
+        async function handleUpdateAll() {
+            try {
+                showToast('Updating...', 'success');
+                
+                await Word.run(async (context) => {
+                    const body = context.document.body;
+                    
+                    // 1. Load fields and paragraphs in ONE sync
+                    const fields = body.fields;
+                    const paragraphs = body.paragraphs;
+                    fields.load("items");
+                    paragraphs.load("items");
+                    await context.sync();
+                    
+                    // 2. Update all fields (batch - no sync needed between)
+                    let fieldCount = fields.items.length;
+                    for (let i = 0; i < fieldCount; i++) {
+                        fields.items[i].updateResult();
+                    }
+                    
+                    // 3. Load all paragraph properties in ONE sync
+                    const paraCount = paragraphs.items.length;
+                    for (let i = 0; i < paraCount; i++) {
+                        paragraphs.items[i].load("style, text");
+                    }
+                    await context.sync();
+                    
+                    // 4. Analyze paragraphs (no sync needed - just reading)
+                    let hasLOTTitle = false;
+                    let hasLOFTitle = false;
+                    let firstLOTEntryIndex = -1;
+                    let firstLOFEntryIndex = -1;
+                    let formattedCount = 0;
+                    
+                    // Collect paragraphs to format
+                    const tocTitles = [];
+                    const tocEntries = [];
+                    const lotLofEntries = [];
+                    
+                    for (let i = 0; i < paraCount; i++) {
+                        const para = paragraphs.items[i];
+                        const text = para.text.trim().toLowerCase();
+                        const styleName = para.style.toLowerCase();
+                        
+                        // Check for existing titles
+                        if (text === 'list of tables' || text.startsWith('list of tables')) {
+                            hasLOTTitle = true;
+                            tocTitles.push(para);
+                        } else if (text === 'list of figures' || text.startsWith('list of figures')) {
+                            hasLOFTitle = true;
+                            tocTitles.push(para);
+                        } else if (text === 'table of contents' || text.startsWith('table of contents')) {
+                            tocTitles.push(para);
+                        }
+                        
+                        // Check TOC entries
+                        let tocLevel = 0;
+                        if (styleName === 'toc 1' || styleName === 'toc1') tocLevel = 1;
+                        else if (styleName === 'toc 2' || styleName === 'toc2') tocLevel = 2;
+                        else if (styleName === 'toc 3' || styleName === 'toc3') tocLevel = 3;
+                        else if (styleName === 'toc 4' || styleName === 'toc4') tocLevel = 4;
+                        else if (styleName === 'toc 5' || styleName === 'toc5') tocLevel = 5;
+                        else if (styleName === 'toc 6' || styleName === 'toc6') tocLevel = 6;
+                        
+                        if (tocLevel > 0) {
+                            tocEntries.push({ para, level: tocLevel });
+                        }
+                        
+                        // Check LOT/LOF entries
+                        if (styleName.includes('table of figures')) {
+                            lotLofEntries.push(para);
+                            const entryText = para.text.trim().toLowerCase();
+                            if (entryText.startsWith('table') && firstLOTEntryIndex === -1) {
+                                firstLOTEntryIndex = i;
+                            }
+                            if (entryText.startsWith('figure') && firstLOFEntryIndex === -1) {
+                                firstLOFEntryIndex = i;
+                            }
+                        }
+                    }
+                    
+                    // 5. Insert missing titles (batch)
+                    let titlesAdded = 0;
+                    
+                    if (!hasLOFTitle && firstLOFEntryIndex !== -1) {
+                        const titlePara = paragraphs.items[firstLOFEntryIndex].insertParagraph("List of Figures", Word.InsertLocation.before);
+                        titlePara.font.name = "Times New Roman";
+                        titlePara.font.size = 12;
+                        titlePara.font.bold = true;
+                        titlePara.alignment = Word.Alignment.centered;
+                        titlePara.spaceAfter = 12;
+                        titlesAdded++;
+                    }
+                    
+                    if (!hasLOTTitle && firstLOTEntryIndex !== -1) {
+                        const titlePara = paragraphs.items[firstLOTEntryIndex].insertParagraph("List of Tables", Word.InsertLocation.before);
+                        titlePara.font.name = "Times New Roman";
+                        titlePara.font.size = 12;
+                        titlePara.font.bold = true;
+                        titlePara.alignment = Word.Alignment.centered;
+                        titlePara.spaceAfter = 12;
+                        titlesAdded++;
+                    }
+                    
+                    // 6. Apply formatting (batch - no sync between)
+                    // Format titles
+                    for (const para of tocTitles) {
+                        para.font.name = "Times New Roman";
+                        para.font.size = 12;
+                        para.font.bold = true;
+                        para.alignment = Word.Alignment.centered;
+                        para.leftIndent = 0;
+                        formattedCount++;
+                    }
+                    
+                    // Format TOC entries with indentation
+                    for (const { para, level } of tocEntries) {
+                        para.font.name = "Times New Roman";
+                        para.font.size = 12;
+                        para.font.bold = false;
+                        para.leftIndent = (level - 1) * 18;
+                        formattedCount++;
+                    }
+                    
+                    // Format LOT/LOF entries
+                    for (const para of lotLofEntries) {
+                        para.font.name = "Times New Roman";
+                        para.font.size = 12;
+                        para.font.bold = false;
+                        para.leftIndent = 0;
+                        formattedCount++;
+                    }
+                    
+                    // 7. Single final sync
+                    await context.sync();
+                    
+                    let message = `Updated ${fieldCount} field(s), formatted ${formattedCount} entries`;
+                    if (titlesAdded > 0) {
+                        message += `, added ${titlesAdded} title(s)`;
+                    }
+                    showToast(message + '!', 'success');
+                });
+            } catch (error) {
+                console.error("Update TOC/LOT/LOF Error:", error);
+                showToast('Error: ' + error.message, 'error');
+            }
+        }
+
+        // ============================================
+        // CONVERSION FUNCTIONS
         // ============================================
         function convertToTitleCase(text) {
-            // Clean up
-            text = text.replace(/[\r\n]+/g, " ").trim();
+            const preservedMap = {};
+            PRESERVED_TERMS.forEach(term => {
+                preservedMap[term.toLowerCase()] = term;
+            });
             
-            const words = text.split(" ");
+            // Special two-word phrases where both words should be capitalized
+            // (normally "in" would be lowercase in title case)
+            const SPECIAL_PHRASES = [
+                { search: /\bin\s+vivo\b/gi, replace: 'In Vivo' },
+                { search: /\bin\s+vitro\b/gi, replace: 'In Vitro' },
+                { search: /\bin\s+situ\b/gi, replace: 'In Situ' },
+                { search: /\bex\s+vivo\b/gi, replace: 'Ex Vivo' },
+                { search: /\bin\s+utero\b/gi, replace: 'In Utero' }
+            ];
+
+            const words = text.split(/(\s+)/);
             const result = [];
-            
+
+            let wordIndex = 0;
+            const totalWords = words.filter(w => w.trim() !== '').length;
+
             for (let i = 0; i < words.length; i++) {
-                let word = words[i].trim();
-                if (word === "") continue;
+                const segment = words[i];
                 
-                const cleanWord = removeTrailingPunctuation(word);
-                const punctuation = word.substring(cleanWord.length);
-                
-                // Check custom terms
-                const customMatch = CUSTOM_TERMS.find(term => 
-                    term.toLowerCase() === cleanWord.toLowerCase()
-                );
-                
-                if (customMatch) {
-                    // Use exact custom term capitalization
-                    result.push(customMatch + punctuation);
-                } else if (i === 0 || i === words.length - 1) {
-                    // First or last word - always capitalize
-                    result.push(capitalizeFirst(cleanWord) + punctuation);
-                } else if (isAcronym(cleanWord)) {
-                    // Keep acronym as-is
-                    result.push(word);
-                } else if (LOWERCASE_WORDS.includes(cleanWord.toLowerCase())) {
-                    // Lowercase word
-                    result.push(cleanWord.toLowerCase() + punctuation);
-                } else {
-                    // Normal word
-                    result.push(capitalizeFirst(cleanWord) + punctuation);
+                if (segment.trim() === '') {
+                    result.push(segment);
+                    continue;
+                }
+
+                wordIndex++;
+                const isFirst = wordIndex === 1;
+                const isLast = wordIndex === totalWords;
+
+                const lowerSegment = segment.toLowerCase();
+                if (preservedMap[lowerSegment]) {
+                    result.push(preservedMap[lowerSegment]);
+                }
+                else if (/^[A-Z]{2,10}$/.test(segment)) {
+                    result.push(segment);
+                }
+                else if (!isFirst && !isLast && LOWERCASE_WORDS.includes(lowerSegment)) {
+                    result.push(lowerSegment);
+                }
+                else {
+                    result.push(segment.charAt(0).toUpperCase() + segment.slice(1).toLowerCase());
                 }
             }
+
+            // Join and then fix special phrases
+            let finalResult = result.join('');
+            for (const phrase of SPECIAL_PHRASES) {
+                finalResult = finalResult.replace(phrase.search, phrase.replace);
+            }
             
-            return result.join(" ");
+            return finalResult;
         }
 
-        // ============================================
-        // SENTENCE CASE CONVERSION
-        // ============================================
         function convertToSentenceCase(text) {
-            text = text.replace(/[\r\n]+/g, " ").trim();
-            
-            if (text.length === 0) return "";
-            
-            let result = "";
-            let capitalizeNext = true;
-            let currentWord = "";
-            
-            for (let i = 0; i < text.length; i++) {
-                const ch = text[i];
-                
-                if (/[a-zA-Z0-9\-]/.test(ch)) {
-                    currentWord += ch;
-                } else {
-                    if (currentWord !== "") {
-                        result += processWordSentence(currentWord, capitalizeNext);
-                        currentWord = "";
-                        capitalizeNext = false;
-                    }
-                    
-                    result += ch;
-                    
-                    // Check for sentence ending
-                    if ((ch === "." || ch === "!" || ch === "?") && i < text.length - 1 && text[i + 1] === " ") {
-                        capitalizeNext = true;
-                    }
-                }
-            }
-            
-            // Handle last word
-            if (currentWord !== "") {
-                result += processWordSentence(currentWord, capitalizeNext);
-            }
-            
-            return result;
-        }
-        
-        function processWordSentence(word, capitalizeFirst) {
-            // Check custom terms
-            const customMatch = CUSTOM_TERMS.find(term => 
-                term.toLowerCase() === word.toLowerCase()
-            );
-            
-            if (customMatch) {
-                return customMatch;
-            }
-            
-            // Check if acronym
-            if (isAcronym(word)) {
-                return word;
-            }
-            
-            // Normal processing
-            if (capitalizeFirst) {
-                return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-            } else {
-                return word.toLowerCase();
-            }
-        }
+            const preservedMap = {};
+            PRESERVED_TERMS.forEach(term => {
+                preservedMap[term.toLowerCase()] = term;
+            });
 
-        // ============================================
-        // HELPER FUNCTIONS
-        // ============================================
-        function removeTrailingPunctuation(word) {
-            const punctuation = /[.,;:!?)\]}"']+$/;
-            return word.replace(punctuation, "");
-        }
-        
-        function capitalizeFirst(word) {
-            if (word.length === 0) return word;
-            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        }
-        
-        function isAcronym(word) {
-            // Check if word is 2-10 letters and all uppercase
-            const letters = word.replace(/[^a-zA-Z]/g, "");
-            return letters.length >= 2 && letters.length <= 10 && letters === letters.toUpperCase();
-        }
-        
-        function showStatus(message, type) {
-            const statusEl = document.getElementById("status");
-            statusEl.textContent = message;
-            statusEl.className = "status " + type;
+            const sentences = text.split(/([.!?]+\s*)/);
+            const result = [];
+
+            for (let i = 0; i < sentences.length; i++) {
+                const sentence = sentences[i];
+                
+                if (/^[.!?]+\s*$/.test(sentence)) {
+                    result.push(sentence);
+                    continue;
+                }
+
+                const words = sentence.split(/(\s+)/);
+                const processedWords = [];
+                let isFirstWord = true;
+
+                for (let j = 0; j < words.length; j++) {
+                    const word = words[j];
+
+                    if (word.trim() === '') {
+                        processedWords.push(word);
+                        continue;
+                    }
+
+                    const lowerWord = word.toLowerCase();
+
+                    if (preservedMap[lowerWord]) {
+                        processedWords.push(preservedMap[lowerWord]);
+                    }
+                    else if (/^[A-Z]{2,10}$/.test(word)) {
+                        processedWords.push(word);
+                    }
+                    else if (isFirstWord) {
+                        processedWords.push(word.charAt(0).toUpperCase() + word.slice(1).toLowerCase());
+                    }
+                    else {
+                        processedWords.push(lowerWord);
+                    }
+
+                    isFirstWord = false;
+                }
+
+                result.push(processedWords.join(''));
+            }
+
+            return result.join('');
         }
     </script>
 </body>
